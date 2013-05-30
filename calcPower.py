@@ -27,6 +27,7 @@ MCPAT_PATH = "/home/prism/mcpat/mcpat"
      --marss Path to marss file(s)      
      --out  Path to output power file(s)    
 """
+simStats = list() #global var of lis of marss files to process
 
 
 def processOptions():
@@ -57,24 +58,6 @@ def processOptions():
   return args
 
 
-
-"""
-try:
-  BENCH_PATH =sys.argv[1]
-except:
-  print "Invalid Benchmark Path"
-  sys.exit(-1) 
-
-OUTPUT_PATH = None
-try:
-  OUTPUT_PATH = sys.argv[2]
-except:
-  print "Invalid Output Path"
-  sys.exit(-1)
-"""
-
-simStats = list() #global var of lis of marss files to process
-
 def fillSimStats(BENCH_PATH):
   if os.path.isfile(BENCH_PATH):
     simStats.append(BENCH_PATH)
@@ -85,48 +68,33 @@ def fillSimStats(BENCH_PATH):
   else:
     print "Invalid marss stat files\n"
     sys.exit(-1)
-"""
-MCPAT_XML = None
-try:
-  MCPAT_XML = sys.argv[3]
-except:
-  print "Invalid McPat XML file" 
-  sys.exit(-1)
-
-TOTAL_CORES = None
-try:
-  TOTAL_CORES = sys.argv[4]
-except:
-  print "Invalid number of cores"
-  sys.exit(-1)
-
-#hardcoded flags for marss2mcpat call
-"""
-
 
 #Main function 
+
 
 def processFiles(BENCH_PATH,cpu_mode,num_core,freq,machine,xml_in,OUTPUT_PATH):
 
   #for each file in simStats, call marss2mcpat to createe temp.xml
-  for i in range(0,1):
+  for i in range(0,len(sinStats)):
     print "Creating XML for ",  simStats[i]
-    if 1==1:#try:
+    try:
       stats = os.path.join(BENCH_PATH,simStats[i])  
       makeXML = subprocess.Popen(["python",str(MARSS_2_MCPAT_PATH), '--cpu_mode', str(cpu_mode), '--num_core', str(num_core),\
       '--freq', str(freq),'--machine',str(machine), '--marss', str(stats), '--xml_in', str(xml_in),  '-o', 'temp.xml']) 
       makeXML.wait()
       #By now, temp.xml is created, now send it to McPat for processing
-    #except:
-      #print "Could not call marss2mcpat.py for ", simStats[i]
+    except:
+      print "Could not call marss2mcpat.py for ", simStats[i]
       #sys.exit(-1)
-      #continue
+      continue
     
     #for each temp.xml file create, call mcpat to create power file  
     print "\nCalling mcpath for", simStats[i]
     try:
       outFileName = list()
-      outFileName.append(simStats[i].split('.')[0])
+      temp =  simStats[i].split('/') #hack to remove absolute path in case of single file
+      temp = temp[len(temp) -1] 
+      outFileName.append(temp.split('.')[0])
       outFileName.append("_power")
       outFileName = ''.join(outFileName)
       outFileName = os.path.join(OUTPUT_PATH,outFileName) 
