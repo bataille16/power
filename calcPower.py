@@ -74,8 +74,12 @@ def fillSimStats(BENCH_PATH):
 
 def processFiles(BENCH_PATH,cpu_mode,num_core,freq,machine,xml_in,OUTPUT_PATH):
 
+
+  #remove any outstanding temp.xml
+  if os.path.isfile("temp.xml"):
+    os.remove("temp.xml")
   #for each file in simStats, call marss2mcpat to createe temp.xml
-  for i in range(0,len(sinStats)):
+  for i in range(0,len(simStats)):
     print "Creating XML for ",  simStats[i]
     try:
       stats = os.path.join(BENCH_PATH,simStats[i])  
