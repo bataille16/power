@@ -59,7 +59,7 @@ update simconfig file for
 def updatesimconfig(simpoint,simconfigfile,outdir):
 
   #part 1: fast forward instructions 
-  fastfwd = simpoint+"0\n" #simpoint x 100M to get number of insns to fast foward 
+  fastfwd = simpoint+"00000000\n" #simpoint x 100M to get number of insns to fast foward 
   fastfwd_line = FAST_FWD_PREFIX + str(fastfwd) 
     
 
@@ -104,7 +104,7 @@ def runmarss(simpoint,simconfig,benchmark,outdir):
 
   print drive_str, " ", marsspath
   try:
-    marss86Run = subprocess.Popen([marsspath,"-simconfig", simconfig, "-m", "2048","-drive",drive_str,"-loadvm", benchmark],\
+    marss86Run = subprocess.Popen([marsspath,"-simconfig", simconfig, "-m", "4096","-drive",drive_str,"-loadvm", benchmark],\
      		stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in marss86Run.stdout:
       #TODO: Check for local ip of vnc or terminal viewer, and launch process to view running of simulation 
